@@ -1,20 +1,24 @@
 package com.optimagrowth.license.service;
 
+import com.optimagrowth.license.expats.organization.clients.OrganizationClient;
+import com.optimagrowth.license.expats.organization.dto.Organization;
 import com.optimagrowth.license.model.License;
 import com.optimagrowth.license.repository.LicenseRepository;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class LicenseService {
 
-    MessageSource messages;
-    LicenseRepository licenseRepo;
+    private final MessageSource messages;
+    private final LicenseRepository licenseRepo;
+    private final OrganizationClient orgClient;
 
     public License getLicense(UUID licenseId, UUID organizationId) {
         License license = licenseRepo
@@ -26,7 +30,6 @@ public class LicenseService {
                                     "license.search.error.message", null, null),
                             licenseId, organizationId));
         }
-//        return license.withComment(config.getProperty())
         return license;
     }
 
@@ -47,5 +50,27 @@ public class LicenseService {
         responseMessage = String.format(messages.getMessage(
                 "license.delete.message", null, null),licenseId);
         return responseMessage;
+    }
+
+    public List<License> getBootstrappedLicenses() {
+
+        List<License> licenses = new ArrayList<>();
+
+        List<Organization> orgs = orgClient.getAllOrganizations();
+
+        orgs.forEach(org -> {
+            for (int i = 1; i <= 10; i++) {
+                License license = new License();
+                license.setDescription("License Desc for License " + i);
+                license.setOrganizationId(org.getId());
+                license.setProductName("Product " + i);
+                license.setLicenseType("Type " + i);
+                license.setComment("Dummy license " + i + " for " + org.getName());
+
+                licenses.add(licenseRepo.save(license));
+            }
+        });
+
+        return licenses;
     }
 }

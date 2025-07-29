@@ -1,5 +1,6 @@
 package com.optimagrowth.license.controller;
 
+import com.optimagrowth.license.expats.organization.clients.OrganizationClient;
 import com.optimagrowth.license.model.License;
 import com.optimagrowth.license.service.LicenseService;
 import lombok.RequiredArgsConstructor;
@@ -9,17 +10,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/v1/organization/{organizationId}/license")
+@RequestMapping("/v1/license")
 @RequiredArgsConstructor
 public class LicenseController {
 
-    private final LicenseService licenseService;
+    private final LicenseService service;
+    private final OrganizationClient orgClient;
 
-    @GetMapping("/{licenseId}")
+    @GetMapping("/{licenseId}/{orgId}")
     public ResponseEntity<License> getLicense (@PathVariable("organizationId") UUID orgId,
                                                @PathVariable("licenseId") UUID licenseId) {
 
-        License license = licenseService.getLicense(licenseId, orgId);
+        License license = service.getLicense(licenseId, orgId);
         return ResponseEntity.ok(license);
     }
 
@@ -28,21 +30,27 @@ public class LicenseController {
             @PathVariable("organizationId") String organizationId,
             @RequestBody License request) {
 
-        return ResponseEntity.ok(licenseService.updateLicense(request));
+        return ResponseEntity.ok(service.updateLicense(request));
     }
 
     @PostMapping
     public ResponseEntity<?> createLicense(
             @PathVariable("orgId") String orgId, @RequestBody License request) {
 
-        return ResponseEntity.ok(licenseService.createLicense(request));
+        return ResponseEntity.ok(service.createLicense(request));
+    }
+
+    @GetMapping("/bootstrap")
+    public ResponseEntity<?> bootstrapLicense() {
+
+        return ResponseEntity.ok(service.getBootstrappedLicenses());
     }
 
     @DeleteMapping("/{licenseId}")
     public ResponseEntity<String> deleteLicense(
             @PathVariable("orgId") String orgId,
             @PathVariable("licenseId") String licenseId) {
-        return ResponseEntity.ok(licenseService.deleteLicense(UUID.fromString(licenseId)));
+        return ResponseEntity.ok(service.deleteLicense(UUID.fromString(licenseId)));
     }
 
 }

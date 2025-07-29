@@ -1,9 +1,6 @@
 package com.optimagrowth.license.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,6 +15,7 @@ import java.util.UUID;
 public class License {
 
     @Id
+    @GeneratedValue(generator = "UUID")
     @Column(name = "license_id", nullable = false)
     private UUID licenseId;
 
