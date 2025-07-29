@@ -4,11 +4,15 @@ import com.optimagrowth.license.expats.organization.clients.OrganizationClient;
 import com.optimagrowth.license.expats.organization.dto.Organization;
 import com.optimagrowth.license.model.License;
 import com.optimagrowth.license.repository.LicenseRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,6 +23,8 @@ public class LicenseService {
     private final MessageSource messages;
     private final LicenseRepository licenseRepo;
     private final OrganizationClient orgClient;
+
+    private static final Logger log = LoggerFactory.getLogger(LicenseService.class);
 
     public License getLicense(UUID licenseId, UUID organizationId) {
         License license = licenseRepo
@@ -52,6 +58,7 @@ public class LicenseService {
         return responseMessage;
     }
 
+    @CircuitBreaker(name = "organization-service", fallbackMethod = "getAllOrgsFallback")
     public List<License> getBootstrappedLicenses() {
 
         List<License> licenses = new ArrayList<>();
@@ -70,7 +77,11 @@ public class LicenseService {
                 licenses.add(licenseRepo.save(license));
             }
         });
-
         return licenses;
+    }
+
+    public List<License> getAllOrgsFallback(Throwable t) {
+        log.warn("Fallback triggered in getBootstrappedLicenses due to: {}", t.getMessage());
+        return Collections.emptyList();
     }
 }
