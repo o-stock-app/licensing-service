@@ -32,9 +32,9 @@ public class LicenseService {
 
         if (null == license) {
             throw new IllegalArgumentException(
-                    String.format(messages.getMessage(
-                                    "license.search.error.message", null, null),
-                            licenseId, organizationId));
+                String.format(messages.getMessage(
+                "license.search.error.message", null, null),
+                        licenseId, organizationId));
         }
         return license;
     }
