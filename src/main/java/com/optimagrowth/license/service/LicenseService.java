@@ -11,10 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +22,18 @@ public class LicenseService {
     private final OrganizationClient orgClient;
 
     private static final Logger log = LoggerFactory.getLogger(LicenseService.class);
+
+    public License getSingleLicense(UUID licenseId) {
+        Optional<License> license = licenseRepo.findById(licenseId);
+
+        if (null == license.get()) {
+            throw new IllegalArgumentException(
+                    String.format(messages.getMessage(
+                                    "license.search.error.message", null, null),
+                            licenseId));
+        }
+        return license.get();
+    }
 
     public License getLicense(UUID licenseId, UUID organizationId) {
         License license = licenseRepo

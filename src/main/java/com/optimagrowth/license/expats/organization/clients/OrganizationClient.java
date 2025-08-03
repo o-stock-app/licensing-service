@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface OrganizationClient {
 
     @GetMapping("/optima/v1/organization/{organizationId}")
-    Organization getOrganization(@PathVariable("organizationId")UUID organizationId);
+    Organization getOrganization(@PathVariable("organizationId") UUID organizationId);
 
     @GetMapping("/optima/v1/organization/bootstrap")
     List<Organization> getAllOrganizations();

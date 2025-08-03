@@ -17,6 +17,13 @@ public class LicenseController {
     private final LicenseService service;
     private final OrganizationClient orgClient;
 
+    @GetMapping("/{licenseId}")
+    public ResponseEntity<License> getLicense (@PathVariable("licenseId") UUID licenseId) {
+
+        License license = service.getSingleLicense(licenseId);
+        return ResponseEntity.ok(license);
+    }
+
     @GetMapping("/{licenseId}/{orgId}")
     public ResponseEntity<License> getLicense (@PathVariable("organizationId") UUID orgId,
                                                @PathVariable("licenseId") UUID licenseId) {
