@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("optima/v1/license")
+@RequestMapping("/optima/v1/license")
 @RequiredArgsConstructor
 public class LicenseController {
 

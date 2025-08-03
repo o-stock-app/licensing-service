@@ -11,9 +11,9 @@ import java.util.UUID;
 @FeignClient(name = "organization-service")
 public interface OrganizationClient {
 
-    @GetMapping("/v1/organization/{organizationId}")
+    @GetMapping("/optima/v1/organization/{organizationId}")
     Organization getOrganization(@PathVariable("organizationId")UUID organizationId);
 
-    @GetMapping("/v1/organization/bootstrap")
+    @GetMapping("/optima/v1/organization/bootstrap")
     List<Organization> getAllOrganizations();
 }
