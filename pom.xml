@@ -129,11 +129,6 @@
 					</from>
 					<to>
 						<image>ostock/licensing-service:${project.version}</image>
-						<!-- <image>ghcr.io/username/licensing-service:${project.version}</image> -->
-						<!-- <auth> -->
-						<!-- <username>username</username> -->
-						<!-- <password>github token</password> -->
-						<!-- </auth> -->
 					</to>
 					<container>
 						<ports>

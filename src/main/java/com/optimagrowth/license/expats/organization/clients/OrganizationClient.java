@@ -14,6 +14,6 @@ public interface OrganizationClient {
     @GetMapping("/v1/organization/{organizationId}")
     Organization getOrganization(@PathVariable("organizationId")UUID organizationId);
 
-    @GetMapping("/v1/organization/all")
+    @GetMapping("/v1/organization/bootstrap")
     List<Organization> getAllOrganizations();
 }
