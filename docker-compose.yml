@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  licensingservice:
+    image: ostock/licensing-service:0.0.1-SNAPSHOT
+    environment:
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://configserver:8071"
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://ostock-db-1-o-stock.k.aivencloud.com:26273/ostock_license_db?ssl=require&user=avnadmin&password=AVNS_FA9KhQA2Kx3J3ui4Hj8"
+      SPRING_DATASOURCE_USERNAME: "avnadmin"
+      SPRING_DATASOURCE_PASSWORD: "AVNS_FA9KhQA2Kx3J3ui4Hj8"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: "http://eurekaserver:8070/eureka/"
+    depends_on:
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+      gatewayserver:
+        condition: service_healthy
+    ports:
+      - "8072:8072"
+    networks:
+      ostock-net:
+
+
+networks:
+  ostock-net:
+    external: true

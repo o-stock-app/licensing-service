@@ -1,0 +1,45 @@
+kind: pipeline
+type: docker
+name: deploy licensing service
+
+steps:
+  - name: remove-current-image
+    image: docker/compose:1.29.2
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+    commands:
+      - docker rmi ostock/licensing-service:0.0.1-SNAPSHOT || true
+
+  - name: build-docker-image
+    image: maven:3.9-eclipse-temurin-17
+    privileged: true
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+    commands:
+      - apt-get update && apt-get install -y docker.io
+      - mvn clean package
+
+  - name: stop-existing-container
+    image: docker/compose:1.29.2
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+    commands:
+      - cd /drone/src
+      - docker-compose down --remove-orphans || true
+
+  - name: start-new-container
+    image: docker/compose:latest
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+    commands:
+      - cd /drone/src
+      - docker-compose up -d
+
+volumes:
+  - name: dockersock
+    host:
+      path: /var/run/docker.sock
