@@ -1,4 +1,4 @@
-version: '3.8'
+version: '2.4'
 
 services:
   licensingservice:
@@ -9,13 +9,6 @@ services:
       SPRING_DATASOURCE_USERNAME: "avnadmin"
       SPRING_DATASOURCE_PASSWORD: "AVNS_FA9KhQA2Kx3J3ui4Hj8"
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: "http://eurekaserver:8070/eureka/"
-    depends_on:
-      configserver:
-        condition: service_healthy
-      eurekaserver:
-        condition: service_healthy
-      gatewayserver:
-        condition: service_healthy
     ports:
       - "8072:8072"
     networks:
