@@ -19,7 +19,7 @@ steps:
         path: /var/run/docker.sock
     commands:
       - apt-get update && apt-get install -y docker.io
-      - mvn clean package -DskipTests
+      - mvn clean package
 
   - name: stop-existing-container
     image: docker/compose:1.29.2
