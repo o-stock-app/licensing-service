@@ -14,7 +14,6 @@ services:
     ports:
       - "8072:8072"
 
-
 networks:
   ostock-net:
     external: true
