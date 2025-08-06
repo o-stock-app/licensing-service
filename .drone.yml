@@ -9,7 +9,9 @@ steps:
       - name: dockersock
         path: /var/run/docker.sock
     commands:
-      - docker rmi ostock/licensing-service:0.0.1-SNAPSHOT || true
+      - docker rm -f $(docker ps -a -q --filter ancestor=ostock/licensing-service:0.0.1-SNAPSHOT) 2>/dev/null || true
+      - docker rmi -f ostock/licensing-service:0.0.1-SNAPSHOT || true
+
 
   - name: build-docker-image
     image: maven:3.9-eclipse-temurin-17
