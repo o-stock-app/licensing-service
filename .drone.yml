@@ -28,7 +28,8 @@ steps:
         path: /var/run/docker.sock
     commands:
       - cd /drone/src
-      - docker-compose down --remove-orphans || true
+      - docker-compose stop licensingservice || true
+      - docker-compose rm -f licensingservice || true
 
   - name: start-new-container
     image: docker/compose:latest
@@ -37,7 +38,7 @@ steps:
         path: /var/run/docker.sock
     commands:
       - cd /drone/src
-      - docker-compose up -d
+      - docker-compose up -d licensingservice
 
 volumes:
   - name: dockersock
