@@ -15,7 +15,12 @@ import java.util.UUID;
 public class LicenseController {
 
     private final LicenseService service;
-    private final OrganizationClient orgClient;
+
+    @GetMapping("/test")
+    public ResponseEntity<?> getLicense() {
+
+        return ResponseEntity.ok("Hello, License service is up and running.");
+    }
 
     @GetMapping("/{licenseId}")
     public ResponseEntity<License> getLicense (@PathVariable("licenseId") UUID licenseId) {
