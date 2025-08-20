@@ -30,7 +30,7 @@ public class LicenseController {
     }
 
     @GetMapping("/{licenseId}/{orgId}")
-    public ResponseEntity<License> getLicense (@PathVariable("organizationId") UUID orgId,
+    public ResponseEntity<License> getLicense (@PathVariable("orgId") UUID orgId,
                                                @PathVariable("licenseId") UUID licenseId) {
 
         License license = service.getLicense(licenseId, orgId);
