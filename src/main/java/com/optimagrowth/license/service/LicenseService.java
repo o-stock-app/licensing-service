@@ -4,6 +4,7 @@ import com.optimagrowth.license.expats.organization.clients.OrganizationClient;
 import com.optimagrowth.license.expats.organization.dto.Organization;
 import com.optimagrowth.license.model.License;
 import com.optimagrowth.license.repository.LicenseRepository;
+import feign.FeignException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -40,6 +41,7 @@ public class LicenseService {
                 .findByOrganizationIdAndLicenseId(organizationId, licenseId);
 
         if (null == license) {
+            log.error("License Num {} not found", licenseId);
             throw new IllegalArgumentException(
                 String.format(messages.getMessage(
                 "license.search.error.message", null, null),
@@ -50,6 +52,8 @@ public class LicenseService {
 
     public License createLicense(License license) {
         license.setLicenseId(UUID.randomUUID());
+        if (licenseRepo.save(license) == null)
+            log.error("New license could not be saved");
         return licenseRepo.save(license);
     }
 
@@ -72,20 +76,29 @@ public class LicenseService {
 
         List<License> licenses = new ArrayList<>();
 
-        List<Organization> orgs = orgClient.getAllOrganizations();
+        try {
+            List<Organization> orgs = orgClient.getAllOrganizations();
 
-        orgs.forEach(org -> {
-            for (int i = 1; i <= 10; i++) {
-                License license = new License();
-                license.setDescription("License Desc for License " + i);
-                license.setOrganizationId(org.getId());
-                license.setProductName("Product " + i);
-                license.setLicenseType("Type " + i);
-                license.setComment("Dummy license " + i + " for " + org.getName());
+            if (orgs.isEmpty()) {
+                log.warn("Org service returned 0 organizations");
+            } else orgs.forEach(org -> {
+                for (int i = 1; i <= 10; i++) {
+                    License license = new License();
+                    license.setDescription("License Desc for License " + i);
+                    license.setOrganizationId(org.getId());
+                    license.setProductName("Product " + i);
+                    license.setLicenseType("Type " + i);
+                    license.setComment("Dummy license " + i + " for " + org.getName());
 
-                licenses.add(licenseRepo.save(license));
-            }
-        });
+                    licenses.add(licenseRepo.save(license));
+                }
+                log.info("Licenses added...");
+            });
+
+        } catch (FeignException e) {
+            log.error("Org service call failed : {}", e.getMessage(), e);
+        }
+
         return licenses;
     }
 
